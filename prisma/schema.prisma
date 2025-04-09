@@ -1,0 +1,128 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
+  role         Role          @default(APPLICANT)
+}
+
+enum Role {
+  APPLICANT
+  ADMIN
+  OFFICER
+}
+
+model Application {
+  id             String          @id @default(uuid())
+  requestNo      String          @unique
+  applicantId    String
+  applicant      User            @relation(fields: [applicantId], references: [id])
+  status         Status          @default(SUBMITTED)
+  personalInfo   PersonalInfo?
+  contactDetails ContactDetails?
+  familyDetails  FamilyDetails?
+  appointment    Appointment?
+  documents      Document[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  submittedAt    DateTime?
+}
+
+enum Status {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  SCHEDULED
+  COMPLETED
+}
+
+model PersonalInfo {
+  id              String      @id @default(uuid())
+  applicationId   String      @unique
+  application     Application @relation(fields: [applicationId], references: [id])
+  firstNameNp     String
+  firstNameEn     String
+  middleNameNp    String?
+  middleNameEn    String?
+  lastNameNp      String
+  lastNameEn      String
+  dateOfBirth     DateTime
+  birthPlace      String
+  citizenshipType String
+  district        String
+  gender          String
+  maritalStatus   String
+  education       String?
+  profession      String?
+  caste           String?
+  religion        String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model ContactDetails {
+  id               String      @id @default(uuid())
+  applicationId    String      @unique
+  application      Application @relation(fields: [applicationId], references: [id])
+  permanentAddress Json
+  temporaryAddress Json?
+  phoneNumber      String
+  mobileNumber     String
+  email            String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model FamilyDetails {
+  id                String      @id @default(uuid())
+  applicationId     String      @unique
+  application       Application @relation(fields: [applicationId], references: [id])
+  fatherName        String
+  fatherCitizenship String?
+  motherName        String
+  motherCitizenship String?
+  grandfatherName   String
+  spouseName        String?
+  spouseCitizenship String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Appointment {
+  id              String      @id @default(uuid())
+  applicationId   String      @unique
+  application     Application @relation(fields: [applicationId], references: [id])
+  officeLocation  String
+  appointmentDate DateTime
+  appointmentTime String
+  status          String      @default("SCHEDULED")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model Document {
+  id            String      @id @default(uuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id])
+  documentType  String
+  fileName      String
+  filePath      String
+  createdAt     DateTime    @default(now())
+  uploadedAt    DateTime    @default(now())
+
+  @@index([applicationId])
+}

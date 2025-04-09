@@ -1,0 +1,108 @@
+.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Upload - Citizenship Application</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="/images/gov logo.png.jpeg" alt="Government of Nepal Logo">
+                <div class="header-text">
+                    <h1>Government of Nepal</h1>
+                    <h2>Ministry of Home Affairs</h2>
+                    <h3>Department of Citizenship Registration</h3>
+                </div>
+            </div>
+            <div class="nepal-flag">
+                <img src="/images/nepal-flag.png.jpeg" alt="Nepal Flag" alt="Nepal Flag">
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="nav-container" style="display: flex; justify-content: space-between;">
+            <a href="/" class="nav-item home-link">
+                <i class="fa fa-home"></i> Home
+            </a>
+            <a href="javascript:history.back()" class="nav-item back-link">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+</nav>
+    <main>
+        <div class="tab-container">
+            <div class="tab">
+                <i class="fas fa-user"></i> Applicant Data
+            </div>
+            <div class="tab">
+                <i class="fas fa-address-book"></i> Contact Details
+            </div>
+            <div class="tab">
+                <i class="fas fa-users"></i> Family Details
+            </div>
+            <div class="tab">
+                <i class="fas fa-file-upload"></i> Documents
+            </div>
+            <div class="tab">
+                <i class="fas fa-calendar-check"></i> Appointment
+            </div>
+            <div class="tab">
+                <i class="fas fa-eye"></i> Preview
+            </div>
+        </div>
+
+        <div class="form-container">
+            <h2 class="section-title">Required Documents</h2>
+            <div class="notice">
+                <p><i class="fas fa-info-circle"></i> Please upload clear, legible scanned copies or photos of the following documents:</p>
+            </div>
+
+            <form action="/application/upload-documents/<%= application.id %>" method="POST" enctype="multipart/form-data">
+                <div class="documents-section">
+                    <div class="document-item">
+                        <label>
+                            <i class="fas fa-id-card"></i>
+                            Birth Certificate
+                            <span class="required">*</span>
+                        </label>
+                        <input type="file" name="documents" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <input type="hidden" name="documentTypes[]" value="BIRTH_CERTIFICATE">
+                    </div>
+
+                    <div class="document-item">
+                        <label>
+                            <i class="fas fa-home"></i>
+                            Proof of Address
+                            <span class="required">*</span>
+                        </label>
+                        <input type="file" name="documents" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <input type="hidden" name="documentTypes[]" value="ADDRESS_PROOF">
+                    </div>
+
+                    <div class="document-item">
+                        <label>
+                            <i class="fas fa-image"></i>
+                            Recent Photo
+                            <span class="required">*</span>
+                        </label>
+                        <input type="file" name="documents" accept=".jpg,.jpeg,.png" required>
+                        <input type="hidden" name="documentTypes[]" value="PHOTO">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-upload"></i> Upload Documents
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
