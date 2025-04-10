@@ -467,7 +467,7 @@ router.get("/status/:id", isAuthenticated, async (req, res) => {
   }
 });
 
-// Delete application
+// Update the delete route
 router.delete("/:id", isAuthenticated, async (req, res) => {
   try {
     const application = await prisma.application.findUnique({
@@ -485,15 +485,9 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    if (application.status !== "DRAFT") {
-      return res.status(400).json({
-        message: "Only draft applications can be deleted",
-      });
-    }
-
+    // Remove the status check to allow deletion of submitted applications
     // Delete all related records in transaction
     await prisma.$transaction([
-      // Delete related records first
       prisma.document.deleteMany({
         where: { applicationId: req.params.id },
       }),
@@ -509,7 +503,6 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
       prisma.personalInfo.deleteMany({
         where: { applicationId: req.params.id },
       }),
-      // Finally delete the application
       prisma.application.delete({
         where: { id: req.params.id },
       }),
